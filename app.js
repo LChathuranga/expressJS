@@ -1,38 +1,32 @@
-const http = require('http')
-const {readFileSync} = require('fs')
+const express = require('express')
+const {posts} = require('./data')
 
-const homePage = readFileSync('./html pages/home.html')
-const homestyle = readFileSync('./html pages/style.css')
-const logo = readFileSync('./html pages/img.png')
+const app = express()
 
-const server = http.createServer((req, res) => {
-
-    const url = req.url
-
-    if(url === '/'){
-        //respond headers
-        res.writeHead(200, {'content-type': 'text/html'})
-        res.write(homePage)
-        res.end()
-    }else if(url === '/about'){
-        res.writeHead(200, {'content-type': 'text/html'})
-        res.write('<h1>About Page</h1>')
-        res.end()
-    }else if(url === '/style.css'){
-        res.writeHead(200, {'content-type': 'text/css'})
-        res.write(homestyle)
-        res.end()
-    }else if(url === '/img.png'){
-        res.writeHead(200, {'content-type': 'image/png'})
-        res.write(logo)
-        res.end()
-    }else{
-        //404 page
-        res.writeHead(404, {'content-type': 'text/html'})
-        res.write('<h1>Page Not Found</h1>')
-        res.end()
-    }
-    
+app.get('/',(req, res) => {
+    res.send('<h1>Home Page</h1><a href="/api/posts">posts</a>')
 })
 
-server.listen(5000)
+//send what are we only wants 
+app.get('/api/posts', (req, res) => {
+    const newPosts = posts.map((post) => {
+        const {userId, id, title} = post
+        return {userId, id, title}
+    }) 
+    res.json(newPosts)
+})
+
+app.get('/api/posts/:productID', (req, res) => {
+    const {productID} = req.params
+    const singlePost = posts.find((post) => post.id === Number(productID)) 
+
+    if(!singlePost){
+        res.status(404).send('Product Does Not Exist')
+    }
+
+    res.json(singlePost)
+})
+
+app.listen(5000, () => {
+    console.log('Server Listning in port 5000');
+})
