@@ -93,5 +93,12 @@ const todos = [
         "completed": true
       },
 ]
+const people = [
+  {id: 1, name: 'lahiru'},
+  {id: 2, name: 'kasun'},
+  {id: 3, name: 'sandun'},
+  {id: 4, name: 'nimal'},
+  {id: 5, name: 'kamal'},
+]
 
-module.exports = {posts, todos}
+module.exports = {posts, todos, people}
